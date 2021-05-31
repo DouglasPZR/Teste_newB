@@ -1,6 +1,6 @@
 {
     "sketch": "I2C_DOS_GURI.ino",
     "configuration": "FlashFreq=80,PartitionScheme=default,CPUFreq=240,UploadSpeed=921600",
-    "board": "espressif:esp32:lolin32",
+    "board": "esp32:esp32:lolin32",
     "port": "COM10"
 }

@@ -1,11 +1,13 @@
 //--------------------------------------------------------------------- INCLUDES
 #include <Wire.h>
 
+
+
 //--------------------------------------------------------------------- DEFINES
-#define EXPANDER_1 0x23 //saida placa teste
-#define EXPANDER_2 0x27 //entrada placa teste
-#define EXPANDER_3 0x20 //saida placa New B
-#define EXPANDER_4 0x21 //Entrada placa New B
+#define EXPANDER_SAIDA_GIGA 0x23 //saida placa teste
+#define EXPANDER_ENTRADA_GIGA 0x27 //entrada placa teste
+#define EXPANDER_SAIDA_PLACA_B 0x20 //saida placa New B
+#define EXPANDER_ENTRADA_PLACA_B 0x21 //Entrada placa New B
 
 #define EXPANDER_GP0 0x00     // DATA PORT REGISTER 0
 #define EXPANDER_GP1 0x01     // DATA PORT REGISTER 1
@@ -28,63 +30,66 @@ void setup()
   Wire.begin(18, 19);    //i2c SDA - 18, SCL - 19
   Wire.setClock(100000); //frêquencia
 
-  //---------------------------------------- CONFIGURA EXPANDER 1 Saida placa teste
-  I2C_CONFIGURA_PORTAS(EXPANDER_1, EXPANDER_IODIR0, OUTPUT);
-  I2C_CONFIGURA_PORTAS(EXPANDER_1, EXPANDER_IODIR1, OUTPUT);
+  //---------------------------------------- CONFIGURA EXPANDER 1 Saida placa teste   
+  i2c_configura_portas(EXPANDER_SAIDA_GIGA, EXPANDER_IODIR0, OUTPUT);
+  i2c_configura_portas(EXPANDER_SAIDA_GIGA, EXPANDER_IODIR1, OUTPUT);
 
   //---------------------------------------- CONFIGURA EXPANDER 2 Entrada placa teste
-  I2C_CONFIGURA_PORTAS(EXPANDER_2, EXPANDER_IODIR0, OUTPUT);
-  I2C_CONFIGURA_PORTAS(EXPANDER_2, EXPANDER_IODIR1, INPUT);
+  i2c_configura_portas(EXPANDER_ENTRADA_GIGA, EXPANDER_IODIR0, OUTPUT);
+  i2c_configura_portas(EXPANDER_ENTRADA_GIGA, EXPANDER_IODIR1, INPUT);
 
   //---------------------------------------- CONFIGURA EXPANDER 3 Saida placa new B
-  I2C_CONFIGURA_PORTAS(EXPANDER_3, EXPANDER_IODIR0, OUTPUT);
-  I2C_CONFIGURA_PORTAS(EXPANDER_3, EXPANDER_IODIR1, OUTPUT);
+  i2c_configura_portas(EXPANDER_SAIDA_PLACA_B, EXPANDER_IODIR0, OUTPUT);
+  i2c_configura_portas(EXPANDER_SAIDA_PLACA_B, EXPANDER_IODIR1, OUTPUT);
 
   //---------------------------------------- CONFIGURA EXPANDER 4 Entrada placa new B
-  I2C_CONFIGURA_PORTAS(EXPANDER_4, EXPANDER_IODIR0, INPUT);
-  I2C_CONFIGURA_PORTAS(EXPANDER_4, EXPANDER_IODIR1, INPUT);
+  i2c_configura_portas(EXPANDER_ENTRADA_PLACA_B, EXPANDER_IODIR0, INPUT);
+  i2c_configura_portas(EXPANDER_ENTRADA_PLACA_B, EXPANDER_IODIR1, INPUT);
 
-  //-----------------------------------------
-  I2C_ESCREVE_PINOS(EXPANDER_1, EXPANDER_GP0, 0);
-  I2C_ESCREVE_PINOS(EXPANDER_1, EXPANDER_GP1, 0);
+  //-----------------------------------------           
+  i2c_escreve_pinos(EXPANDER_SAIDA_GIGA, EXPANDER_GP0, 0);
+  i2c_escreve_pinos(EXPANDER_SAIDA_GIGA, EXPANDER_GP1, 0);
 }
 
 //---------------------------------- LOOP -----------------------------------
 void loop()
 {
-  uint8_t leitura_pino = 0;
 
-  leitura_pino = I2C_LER_PINO_UNICO(EXPANDER_2, EXPANDER_GP1, 7);
+  testa_saidas_placa_B();
+
+/*   uint8_t leitura_pino = 0;
+
+  leitura_pino = i2c_ler_pino_unico(EXPANDER_ENTRADA_GIGA, EXPANDER_GP1, 7);
   if (leitura_pino == 1)
-    I2C_ESCREVE_PINO_UNICO(EXPANDER_2, EXPANDER_GP0, 5, 1);
+    i2c_escreve_pino_unico(EXPANDER_ENTRADA_GIGA, EXPANDER_GP0, 5, 1);
   else if (leitura_pino == 0)
-    I2C_ESCREVE_PINO_UNICO(EXPANDER_2, EXPANDER_GP0, 5, 0);
+    i2c_escreve_pino_unico(EXPANDER_ENTRADA_GIGA, EXPANDER_GP0, 5, 0);
 
-  I2C_ESCREVE_PINOS(EXPANDER_1, EXPANDER_GP0, 0);
-  I2C_ESCREVE_PINOS(EXPANDER_1, EXPANDER_GP1, 0);
-  delay(500);
+  i2c_escreve_pinos(EXPANDER_SAIDA_GIGA, EXPANDER_GP0, 0);
+  i2c_escreve_pinos(EXPANDER_SAIDA_GIGA, EXPANDER_GP1, 0);
+  delay(500); */
 }
 
 //---------------------------------- CONFIGURA EXPANDER  -----------------------------------
-void I2C_CONFIGURA_PORTAS(uint8_t endereco, uint8_t comando, uint8_t valor)
+void i2c_configura_portas(uint8_t endereco, uint8_t comando, uint8_t valor)
 {
   if (valor == INPUT)
   {
-    I2C_ESCREVE_PINOS(endereco, comando, 0xFF);
+    i2c_escreve_pinos(endereco, comando, 0xFF);
   }
   else if (valor == OUTPUT)
   {
-    I2C_ESCREVE_PINOS(endereco, comando, 0x00);
+    i2c_escreve_pinos(endereco, comando, 0x00);
   }
   else
   {
-    I2C_ESCREVE_PINOS(endereco, comando, valor);
+    i2c_escreve_pinos(endereco, comando, valor);
   }
 }
 
-//---------------------------------- ESCREVE PINO UNICO -----------------------------------
-// I2C_ESCREVE_PINO_UNICO (endereço_da_expander, comando_expander, pino_escrita, valor)
-void I2C_ESCREVE_PINO_UNICO(uint8_t endereco, uint8_t comando, int pino, int valor)
+//---------------------------------- ESCREVE PINO UNICO -----------------------------------    
+// i2c_escreve_pino_unico (endereço_da_expander, comando_expander, pino_escrita, valor)
+void i2c_escreve_pino_unico(uint8_t endereco, uint8_t comando, int pino, int valor)
 {
   uint8_t statusGP = 0;
   Wire.beginTransmission(endereco);
@@ -110,8 +115,8 @@ void I2C_ESCREVE_PINO_UNICO(uint8_t endereco, uint8_t comando, int pino, int val
 }
 
 //---------------------------------- ESCREVE VARIOS PINOS -----------------------------------
-// I2C_ESCREVE_PINOS (endereço_da_expander, comando_expander, valor_portas)
-void I2C_ESCREVE_PINOS(uint8_t endereco, uint8_t comando, uint8_t dados)
+// i2c_escreve_pinos (endereço_da_expander, comando_expander, valor_portas)
+void i2c_escreve_pinos(uint8_t endereco, uint8_t comando, uint8_t dados)
 {
   Wire.beginTransmission(endereco);
   Wire.write(comando);
@@ -120,9 +125,9 @@ void I2C_ESCREVE_PINOS(uint8_t endereco, uint8_t comando, uint8_t dados)
   delay(10);
 }
 
-//---------------------------------- LEITURA PINO UNICO -----------------------------------
-// I2C_LER_PINO_UNICO (endereço_da_expander, comando_expander, valor_portas)
-uint8_t I2C_LER_PINO_UNICO(uint8_t endereco, uint8_t porta, uint8_t pino)
+//---------------------------------- LEITURA PINO UNICO -----------------------------------  
+// i2c_ler_pino_unico (endereço_da_expander, comando_expander, valor_portas)
+uint8_t i2c_ler_pino_unico(uint8_t endereco, uint8_t porta, uint8_t pino)
 {
   uint8_t statusGP = 0;
 
@@ -136,35 +141,36 @@ uint8_t I2C_LER_PINO_UNICO(uint8_t endereco, uint8_t porta, uint8_t pino)
 }
 
 //-------------------------------TESTA SAIDAS PLACA B----------------------------------
-void TESTA_SAIDAS_PLACA_B()
+//
+void testa_saidas_placa_B()
 {
   uint8_t leitura_pino = 0;
 
   for (int i = 0; i < 8; i++)
   {
-    I2C_ESCREVE_PINO_UNICO(EXPANDER_3, EXPANDER_GP0, i, 1);
+    i2c_escreve_pino_unico(EXPANDER_SAIDA_PLACA_B, EXPANDER_GP0, i, 1);
     delay(250);
-    leitura_pino = I2C_LER_PINO_UNICO(EXPANDER_2, EXPANDER_GP0, i);
+    leitura_pino = i2c_ler_pino_unico(EXPANDER_ENTRADA_GIGA, EXPANDER_GP0, i);
     if (leitura_pino == 1)
-      Serial.println ("\n Saida %d acionanda.", i);
+      Serial.println ("Saida acionanda");
     else if (leitura_pino == 0)
-      Serial.println ("\n Saida %d nao acionando.", i);
+      Serial.println ("Saida  nao acionando.");
   }
 
   for (int i = 0; i < 4; i++)
   {
-    I2C_ESCREVE_PINO_UNICO(EXPANDER_3, EXPANDER_GP1, i, 1);
+    i2c_escreve_pino_unico(EXPANDER_SAIDA_PLACA_B, EXPANDER_GP1, i, 1);
     delay(250);
-    leitura_pino = I2C_LER_PINO_UNICO(EXPANDER_2, EXPANDER_GP1, i);
+    leitura_pino = i2c_ler_pino_unico(EXPANDER_ENTRADA_GIGA, EXPANDER_GP1, i);
     if (leitura_pino == 1)
-      Serial.println ("\n Saida %d acionanda.", i + 8);
+      Serial.println ("Saida acionanda.");
     else if (leitura_pino == 0)
-      Serial.println ("\n Saida %d nao acionando.", i +8);
+      Serial.println ("Saida  nao acionando.");
   }
 }
 
 //--------------------------------TESTA ENTRADAS DA PLACA B------------------------------
-void TESTA_ENTRADAS_PLACA_B ()
+void testa_entradas_placa_B ()
 {
 
 
