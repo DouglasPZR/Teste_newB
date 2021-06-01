@@ -1,6 +1,8 @@
 //--------------------------------------------------------------------- INCLUDES
 #include <Wire.h>
 
+//tetse git
+
 //--------------------------------------------------------------------- DEFINES
 #define EXPANDER_SAIDA_GIGA 0x23      //saida placa teste
 #define EXPANDER_ENTRADA_GIGA 0x27    //entrada placa teste
@@ -53,7 +55,7 @@ void setup()
 void loop()
 {
 
-   testa_saidas_placa_B();
+  testa_saidas_placa_B();
 
   /*   uint8_t leitura_pino = 0;
 
